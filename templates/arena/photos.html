@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% translate 'My photos' %} · SharingFace{% endblock %}
+{% block content %}
+<section class="page-section" aria-labelledby="page-heading">
+  <div class="page-heading-row"><div><p class="eyebrow">{% translate 'YOUR SIDE OF THE STORY' %}</p><h1 id="page-heading">{% translate 'A photo.' %}<br><span class="serif-accent">{% translate 'A new perspective.' %}</span></h1><p class="intro-text">{% translate 'Share a selfie and see how the community responds.' %}</p></div><div class="account-pill"><span class="status-dot" aria-hidden="true"></span>{{ user.username }}</div></div>
+  <div class="photos-layout">
+    <section class="panel upload-panel" aria-labelledby="upload-heading">
+      <p class="eyebrow">{% translate 'JOIN THE MIX' %}</p><h2 id="upload-heading">{% translate 'Upload a photo' %}</h2>
+      <form method="post" enctype="multipart/form-data" action="{% url 'arena:photos' %}" class="upload-form">
+        {% csrf_token %}
+        {% if form.errors %}<div class="form-errors" role="alert">{% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}{% for field in form %}{% for error in field.errors %}<p><a href="#{{ field.id_for_label }}">{{ field.label }}: {{ error }}</a></p>{% endfor %}{% endfor %}</div>{% endif %}
+        <div class="upload-dropzone" data-dropzone><div class="upload-preview" data-upload-preview hidden><img alt="{% translate 'Selected photo preview' %}"></div><div class="upload-prompt"><span class="upload-icon" aria-hidden="true">↑</span><label for="{{ form.image.id_for_label }}">{% translate 'Choose your photo' %}</label><p>{% translate 'Or drop it here. JPEG, PNG or WebP.' %}</p></div>{{ form.image }}</div>
+        {% if form.image.help_text %}<div class="field-help" id="{{ form.image.auto_id }}_helptext">{{ form.image.help_text|safe }}</div>{% endif %}
+        <div class="field">{{ form.caption.label_tag }}{{ form.caption }}{% if form.caption.help_text %}<div class="field-help" id="{{ form.caption.auto_id }}_helptext">{{ form.caption.help_text|safe }}</div>{% endif %}</div>
+        <div class="consent-field">{{ form.consent }}<label for="{{ form.consent.id_for_label }}">{{ form.consent.label }}</label></div>
+        <button class="button button-primary button-full" type="submit">{% translate 'Add to the arena' %}<span aria-hidden="true">↗</span></button>
+      </form>
+    </section>
+    <section class="my-gallery" aria-labelledby="gallery-heading">
+      <div class="section-heading"><h2 id="gallery-heading">{% translate 'Your photos' %}</h2><span class="count-badge">{{ photos|length }}</span></div>
+      {% if photos %}
+      <div class="photo-grid">{% for photo in photos %}<article class="gallery-card"><img class="gallery-image" src="{{ photo.image.url }}" alt="{% blocktranslate with name=photo.name %}Photo by {{ name }}{% endblocktranslate %}" loading="lazy"><div class="gallery-info"><h3>{{ photo.name }}</h3><div class="gallery-stats"><span><strong>{{ photo.wins }}</strong> {% translate 'wins' %}</span><span><strong>{{ photo.comparisons }}</strong> {% translate 'matches' %}</span><span class="gallery-rating">{{ photo.rating|floatformat:0 }}</span></div><form action="{% url 'arena:delete_photo' photo.pk %}" method="post" data-delete-form data-confirm="{% translate 'Delete this photo and its voting history? This cannot be undone.' %}">{% csrf_token %}<button type="submit" class="delete-button">{% translate 'Delete photo' %}<span aria-hidden="true">×</span></button></form></div></article>{% endfor %}</div>
+      {% else %}
+      <div class="gallery-empty"><span class="outline-frame" aria-hidden="true">＋</span><h3>{% translate 'Your first photo goes here.' %}</h3><p>{% translate 'Upload a selfie to start receiving votes. You can delete it whenever you like.' %}</p></div>
+      {% endif %}
+    </section>
+  </div>
+</section>
+{% endblock %}

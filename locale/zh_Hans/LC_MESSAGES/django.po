@@ -1,0 +1,411 @@
+# Simplified Chinese translations for SharingFace.
+# Distributed under the same license as the SharingFace project.
+msgid ""
+msgstr ""
+"Project-Id-Version: SharingFace 0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-28 07:24+0900\n"
+"PO-Revision-Date: 2026-10-28 07:22+0900\n"
+"Last-Translator: SharingFace\n"
+"Language-Team: Simplified Chinese\n"
+"Language: zh_Hans\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: arena/forms.py:14
+msgid "This is my photo, and I agree to display it in public voting."
+msgstr "这是我本人的照片，我同意将它公开展示并参与投票。"
+
+#: arena/forms.py:20
+msgid "Your photo"
+msgstr "你的照片"
+
+#: arena/forms.py:20
+msgid "Display name"
+msgstr "展示名称"
+
+#: arena/forms.py:22
+msgid "JPEG, PNG or WebP, up to 10 MB."
+msgstr "支持 JPEG、PNG 或 WebP，大小不超过 10 MB。"
+
+#: arena/forms.py:23
+msgid "Optional. Your username is used if you leave this blank."
+msgstr "选填，留空时显示你的用户名。"
+
+#: arena/forms.py:33
+msgid "Please choose a photo smaller than 10 MB."
+msgstr "请选择大小不超过 10 MB 的照片。"
+
+#: arena/forms.py:37
+msgid "Please choose a JPEG, PNG or WebP photo."
+msgstr "请选择 JPEG、PNG 或 WebP 格式的照片。"
+
+#: arena/forms.py:39
+msgid "Please choose a photo under 25 megapixels."
+msgstr "请选择像素数不超过 2500 万的照片。"
+
+#: arena/forms.py:50
+msgid "This photo could not be read. Please choose a different image."
+msgstr "无法读取这张照片，请选择另一张图片。"
+
+#: arena/models.py:58
+msgid "Pending"
+msgstr "待投票"
+
+#: arena/models.py:59
+msgid "Voted"
+msgstr "已投票"
+
+#: arena/models.py:60
+msgid "Skipped"
+msgstr "已跳过"
+
+#: arena/services.py:67
+msgid "This matchup is no longer available."
+msgstr "这组照片已不可用，请选择下一组。"
+
+#: arena/services.py:69
+msgid "This matchup has already been answered."
+msgstr "你已经投票或跳过这组照片了。"
+
+#: arena/services.py:79 arena/services.py:81 arena/tests.py:198
+msgid "Choose one of the two photos."
+msgstr "请从这两张照片中选择一张。"
+
+#: arena/services.py:90
+msgid "You cannot vote on your own photo."
+msgstr "你不能为自己的照片投票。"
+
+#: arena/tests.py:197 templates/arena/_duel.html:6
+msgid "Two photos."
+msgstr "两张照片，"
+
+#: templates/arena/_duel.html:5
+msgid "THE PHOTO ARENA"
+msgstr "自拍对决"
+
+#: templates/arena/_duel.html:6
+msgid "Your choice."
+msgstr "由你选择。"
+
+#: templates/arena/_duel.html:7
+msgid "Choose the photo you prefer. Every vote shapes the leaderboard."
+msgstr "选出你更喜欢的照片，每一票都会影响排行榜。"
+
+#: templates/arena/_duel.html:9
+msgid "Voting statistics"
+msgstr "投票统计"
+
+#: templates/arena/_duel.html:10
+msgid "Your votes"
+msgstr "你投出的票"
+
+#: templates/arena/_duel.html:12
+msgid "Photos in play"
+msgstr "参赛照片"
+
+#: templates/arena/_duel.html:20
+msgid "Your vote is in."
+msgstr "投票已记录。"
+
+#: templates/arena/_duel.html:20
+#, python-format
+msgid "%(support)s of %(total)s votes share your choice."
+msgstr "共 %(total)s 票，其中 %(support)s 票与你的选择相同。"
+
+#: templates/arena/_duel.html:23
+msgid "Your vote could not be saved. Please try again or refresh the page."
+msgstr "投票未能保存，请重试或刷新页面。"
+
+#: templates/arena/_duel.html:30 templates/arena/_duel.html:35
+#: templates/arena/leaderboard.html:10 templates/arena/photos.html:23
+#, python-format
+msgid "Photo by %(name)s"
+msgstr "%(name)s 的照片"
+
+#: templates/arena/_duel.html:31 templates/arena/_duel.html:36
+msgid "Choose this photo"
+msgstr "选这张"
+
+#: templates/arena/_duel.html:40
+msgid "to choose"
+msgstr "选择照片"
+
+#: templates/arena/_duel.html:41
+msgid "Skip this pair"
+msgstr "跳过这组"
+
+#: templates/arena/_duel.html:42
+msgid "Go with your instinct."
+msgstr "跟着直觉选。"
+
+#: templates/arena/_duel.html:51
+msgid "ALL CAUGHT UP"
+msgstr "全部看完啦"
+
+#: templates/arena/_duel.html:52
+msgid "You've seen every pairing."
+msgstr "你已经看完所有组合。"
+
+#: templates/arena/_duel.html:53
+msgid ""
+"New photos bring new choices. Check the rankings or add a photo of your own."
+msgstr "新照片会带来新的选择。看看排行榜，或者上传你自己的照片。"
+
+#: templates/arena/_duel.html:55
+msgid "ROOM FOR A FIRST IMPRESSION"
+msgstr "准备登场"
+
+#: templates/arena/_duel.html:56
+msgid "The first match starts with you."
+msgstr "第一场对决，从你开始。"
+
+#: templates/arena/_duel.html:57
+msgid ""
+"A match needs photos from two other people. Add yours and help get things "
+"started."
+msgstr "投票需要两位其他用户的照片。上传你的照片，让更多人有得选。"
+
+#: templates/arena/_duel.html:59 templates/arena/photos.html:9
+msgid "Upload a photo"
+msgstr "上传照片"
+
+#: templates/arena/_duel.html:59
+msgid "View leaderboard"
+msgstr "查看排行榜"
+
+#: templates/arena/_duel.html:62
+msgid "Every perspective is different. Yours counts."
+msgstr "每个人的眼光不同，你的选择也重要。"
+
+#: templates/arena/_duel.html:62
+msgid "Put your photo in the mix"
+msgstr "让你的照片也参赛"
+
+#: templates/arena/home.html:3 templates/base.html:24
+msgid "Vote"
+msgstr "投票"
+
+#: templates/arena/leaderboard.html:3 templates/base.html:25
+msgid "Leaderboard"
+msgstr "排行榜"
+
+#: templates/arena/leaderboard.html:6
+msgid "CHOSEN BY THE COMMUNITY"
+msgstr "由大家共同选择"
+
+#: templates/arena/leaderboard.html:6
+msgid "The"
+msgstr "人气"
+
+#: templates/arena/leaderboard.html:6
+msgid "leaderboard."
+msgstr "排行榜。"
+
+#: templates/arena/leaderboard.html:6
+msgid "A snapshot of shared preferences, shaped by every match."
+msgstr "每一场对决，都在记录大家的偏好。"
+
+#: templates/arena/leaderboard.html:6
+msgid "Cast your vote"
+msgstr "去投票"
+
+#: templates/arena/leaderboard.html:9
+msgid "Photos ranked by community votes"
+msgstr "照片投票排行榜"
+
+#: templates/arena/leaderboard.html:9
+msgid "Rank"
+msgstr "排名"
+
+#: templates/arena/leaderboard.html:9
+msgid "Photo"
+msgstr "照片"
+
+#: templates/arena/leaderboard.html:9
+msgid "Rating"
+msgstr "积分"
+
+#: templates/arena/leaderboard.html:9
+msgid "Wins"
+msgstr "胜出"
+
+#: templates/arena/leaderboard.html:9
+msgid "Matches"
+msgstr "对决"
+
+#: templates/arena/leaderboard.html:13
+msgid ""
+"Ratings reflect relative community preferences, not an objective measure of "
+"beauty. New photos start at 1,000."
+msgstr "积分反映参与者的相对偏好，并非客观颜值。新照片的初始积分为 1,000。"
+
+#: templates/arena/leaderboard.html:15
+msgid "Every ranking starts somewhere."
+msgstr "排行榜等待第一票。"
+
+#: templates/arena/leaderboard.html:15
+msgid "Photos will appear here after their first vote."
+msgstr "照片获得第一票后，就会出现在这里。"
+
+#: templates/arena/leaderboard.html:15
+msgid "Go to the arena"
+msgstr "前往投票"
+
+#: templates/arena/photos.html:3 templates/base.html:26
+msgid "My photos"
+msgstr "我的照片"
+
+#: templates/arena/photos.html:6
+msgid "YOUR SIDE OF THE STORY"
+msgstr "展示你自己"
+
+#: templates/arena/photos.html:6
+msgid "A photo."
+msgstr "一张照片，"
+
+#: templates/arena/photos.html:6
+msgid "A new perspective."
+msgstr "一种新视角。"
+
+#: templates/arena/photos.html:6
+msgid "Share a selfie and see how the community responds."
+msgstr "分享一张自拍，看看大家会怎样选择。"
+
+#: templates/arena/photos.html:9
+msgid "JOIN THE MIX"
+msgstr "加入对决"
+
+#: templates/arena/photos.html:13
+msgid "Selected photo preview"
+msgstr "已选照片预览"
+
+#: templates/arena/photos.html:13
+msgid "Choose your photo"
+msgstr "选择照片"
+
+#: templates/arena/photos.html:13
+msgid "Or drop it here. JPEG, PNG or WebP."
+msgstr "也可以拖到这里。支持 JPEG、PNG 或 WebP。"
+
+#: templates/arena/photos.html:17
+msgid "Add to the arena"
+msgstr "上传并参赛"
+
+#: templates/arena/photos.html:21
+msgid "Your photos"
+msgstr "你的照片"
+
+#: templates/arena/photos.html:23
+msgid "wins"
+msgstr "次胜出"
+
+#: templates/arena/photos.html:23
+msgid "matches"
+msgstr "次对决"
+
+#: templates/arena/photos.html:23
+msgid "Delete this photo and its voting history? This cannot be undone."
+msgstr "确定删除这张照片及其投票记录吗？此操作无法撤销。"
+
+#: templates/arena/photos.html:23
+msgid "Delete photo"
+msgstr "删除照片"
+
+#: templates/arena/photos.html:25
+msgid "Your first photo goes here."
+msgstr "上传你的第一张照片。"
+
+#: templates/arena/photos.html:25
+msgid ""
+"Upload a selfie to start receiving votes. You can delete it whenever you "
+"like."
+msgstr "上传自拍即可参与投票，你随时可以删除。"
+
+#: templates/base.html:9
+msgid "Two photos, one choice. Share your perspective on SharingFace."
+msgstr "两张照片，一个选择。在 SharingFace 分享你的审美。"
+
+#: templates/base.html:16
+msgid "Skip to content"
+msgstr "跳转到主要内容"
+
+#: templates/base.html:22
+msgid "Main navigation"
+msgstr "主导航"
+
+#: templates/base.html:30
+msgid "Language"
+msgstr "语言"
+
+#: templates/base.html:38
+msgid "Log out"
+msgstr "退出登录"
+
+#: templates/base.html:40 templates/registration/login.html:3
+#: templates/registration/login.html:7 templates/registration/signup.html:7
+msgid "Log in"
+msgstr "登录"
+
+#: templates/base.html:49
+msgid "A matter of perspective."
+msgstr "各有各的眼光。"
+
+#: templates/base.html:50
+msgid "Personal preferences, shared."
+msgstr "分享你的偏好。"
+
+#: templates/registration/login.html:6
+msgid "A FAMILIAR FACE"
+msgstr "又见面了"
+
+#: templates/registration/login.html:6
+msgid "Welcome"
+msgstr "欢迎"
+
+#: templates/registration/login.html:6
+msgid "back."
+msgstr "回来。"
+
+#: templates/registration/login.html:6
+msgid "Log in to share photos and keep your votes together."
+msgstr "登录后即可分享照片，保存你的投票记录。"
+
+#: templates/registration/login.html:6 templates/registration/signup.html:6
+msgid "Just here to vote?"
+msgstr "只想投票？直接开始"
+
+#: templates/registration/login.html:7
+msgid "New here?"
+msgstr "第一次来？"
+
+#: templates/registration/login.html:7 templates/registration/signup.html:3
+#: templates/registration/signup.html:7
+msgid "Create an account"
+msgstr "注册账号"
+
+#: templates/registration/signup.html:6
+msgid "MAKE YOUR FIRST IMPRESSION"
+msgstr "从这里认识你"
+
+#: templates/registration/signup.html:6
+msgid "Join the"
+msgstr "分享"
+
+#: templates/registration/signup.html:6
+msgid "picture."
+msgstr "你的照片。"
+
+#: templates/registration/signup.html:6
+msgid "An account gives your photos a home and your votes a history."
+msgstr "创建账号，管理你的照片和投票记录。"
+
+#: templates/registration/signup.html:7
+msgid "Create account"
+msgstr "创建账号"
+
+#: templates/registration/signup.html:7
+msgid "Already have an account?"
+msgstr "已有账号？"
