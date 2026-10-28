@@ -19,8 +19,9 @@ def get_match(voter, user=None):
     owner_id = user.pk if user is not None and user.is_authenticated else voter.user_id
     pending = Match.objects.filter(voter=voter, status=Match.Status.PENDING)
     if owner_id is not None:
-        pending.filter(photo_a__owner_id=owner_id).update(status=Match.Status.SKIPPED)
-        pending.filter(photo_b__owner_id=owner_id).update(status=Match.Status.SKIPPED)
+        pending.filter(Q(photo_a__owner_id=owner_id) | Q(photo_b__owner_id=owner_id)).update(
+            status=Match.Status.SKIPPED
+        )
     match = pending.select_related("photo_a__owner", "photo_b__owner").first()
     if match:
         return match

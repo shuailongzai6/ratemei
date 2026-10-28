@@ -2,17 +2,53 @@
 {% load i18n %}
 {% block title %}{% translate 'Leaderboard' %} · SharingFace{% endblock %}
 {% block content %}
-<section class="page-section" aria-labelledby="page-heading">
-  <div class="page-heading-row"><div><p class="eyebrow">{% translate 'CHOSEN BY THE COMMUNITY' %}</p><h1 id="page-heading">{% translate 'The' %} <span class="serif-accent">{% translate 'leaderboard.' %}</span></h1><p class="intro-text">{% translate 'A snapshot of shared preferences, shaped by every match.' %}</p></div><a class="button button-primary" href="{% url 'arena:home' %}">{% translate 'Cast your vote' %}<span aria-hidden="true">↗</span></a></div>
-  {% if photos %}
-  <div class="leaderboard-table-wrap">
-    <table class="leaderboard-table"><caption class="sr-only">{% translate 'Photos ranked by community votes' %}</caption><thead><tr><th scope="col">{% translate 'Rank' %}</th><th scope="col">{% translate 'Photo' %}</th><th scope="col" class="numeric">{% translate 'Rating' %}</th><th scope="col" class="numeric">{% translate 'Wins' %}</th><th scope="col" class="numeric">{% translate 'Matches' %}</th></tr></thead><tbody>
-    {% for photo in photos %}<tr><td><span class="rank {% if forloop.counter <= 3 %}rank-top{% endif %}">{{ forloop.counter|stringformat:'02d' }}</span></td><td><div class="ranked-photo"><img src="{{ photo.image.url }}" alt="{% blocktranslate with name=photo.name %}Photo by {{ name }}{% endblocktranslate %}" loading="lazy"><span>{{ photo.name }}</span></div></td><td class="numeric rating-value">{{ photo.rating|floatformat:0 }}</td><td class="numeric">{{ photo.wins }}</td><td class="numeric muted">{{ photo.comparisons }}</td></tr>{% endfor %}
-    </tbody></table>
+<section class="page" aria-labelledby="page-title">
+  <div class="page-head">
+    <div>
+      <h1 id="page-title">{% translate 'Leaderboard' %}</h1>
+      <p class="lead">{% translate 'A snapshot of shared preferences, shaped by every match.' %}</p>
+    </div>
+    <a class="button button-primary" href="{% url 'arena:home' %}">{% translate 'Cast your vote' %}{% include '_icon.html' with name='arrow-right' %}</a>
   </div>
-  <p class="table-note">{% translate 'Ratings reflect relative community preferences, not an objective measure of beauty. New photos start at 1,000.' %}</p>
+
+  {% if podium %}
+  <ol class="podium" role="list" aria-label="{% translate 'Top three' %}">
+    {% for photo in podium %}
+    <li class="podium-item" data-rank="{{ forloop.counter }}">
+      <div class="podium-photo">
+        <img src="{{ photo.display.url }}" alt="{% blocktranslate with name=photo.name %}Photo by {{ name }}{% endblocktranslate %}" width="720" height="960" decoding="async">
+        <span class="medal"><span class="sr-only">{% translate 'Rank' %}</span>{{ forloop.counter }}</span>
+      </div>
+      <p class="podium-name">{{ photo.name }}</p>
+      <p class="podium-rating"><span class="sr-only">{% translate 'Rating' %}</span>{{ photo.rating|floatformat:0 }}</p>
+      <p class="record">{% include 'arena/_record.html' %}</p>
+    </li>
+    {% endfor %}
+  </ol>
+
+  {% if ranked %}
+  <ol class="ranking" role="list" start="4" aria-label="{% translate 'Photos ranked by community votes' %}">
+    {% for photo in ranked %}
+    <li class="rank-row">
+      <span class="rank-no"><span class="sr-only">{% translate 'Rank' %}</span>{{ forloop.counter|add:3 }}</span>
+      <img class="rank-thumb" src="{{ photo.thumbnail.url }}" alt="{% blocktranslate with name=photo.name %}Photo by {{ name }}{% endblocktranslate %}" width="180" height="240" loading="lazy" decoding="async">
+      <div class="rank-info">
+        <p class="rank-name">{{ photo.name }}</p>
+        <p class="record">{% include 'arena/_record.html' %}</p>
+      </div>
+      <p class="rank-rating"><span class="sr-only">{% translate 'Rating' %}</span>{{ photo.rating|floatformat:0 }}</p>
+    </li>
+    {% endfor %}
+  </ol>
+  {% endif %}
+  <p class="footnote">{% translate 'Ratings reflect relative community preferences, not an objective measure of beauty. New photos start at 1,000.' %}</p>
   {% else %}
-  <div class="panel empty-panel"><span class="empty-symbol" aria-hidden="true">↗</span><h2>{% translate 'Every ranking starts somewhere.' %}</h2><p>{% translate 'Photos will appear here after their first vote.' %}</p><a class="button button-primary" href="{% url 'arena:home' %}">{% translate 'Go to the arena' %}<span aria-hidden="true">→</span></a></div>
+  <div class="empty">
+    <span class="empty-icon">{% include '_icon.html' with name='trophy' %}</span>
+    <h2>{% translate 'Every ranking starts somewhere.' %}</h2>
+    <p>{% translate 'Photos will appear here after their first vote.' %}</p>
+    <div class="empty-actions"><a class="button button-primary" href="{% url 'arena:home' %}">{% translate 'Go to the arena' %}{% include '_icon.html' with name='arrow-right' %}</a></div>
+  </div>
   {% endif %}
 </section>
 {% endblock %}

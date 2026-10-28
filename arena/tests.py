@@ -97,21 +97,23 @@ class ArenaTests(TestCase):
                 self.assertIn(field, response.context["form"].errors)
                 self.assertFalse(Photo.objects.exists())
 
-    def test_only_owner_can_delete_photo_and_its_stored_file(self):
+    def test_only_owner_can_delete_photo_and_its_stored_files(self):
         photo = self.photo(self.alice)
-        storage, name = photo.image.storage, photo.image.name
+        photo.display.generate()
+        photo.thumbnail.generate()
+        files = [(file.storage, file.name) for file in (photo.image, photo.display, photo.thumbnail)]
         url = reverse("arena:delete_photo", args=[photo.pk])
         self.client.force_login(self.bob)
         self.assertEqual(self.client.post(url).status_code, 404)
         self.assertTrue(Photo.objects.filter(pk=photo.pk).exists())
-        self.assertTrue(storage.exists(name))
+        self.assertTrue(all(storage.exists(name) for storage, name in files))
 
         self.client.force_login(self.alice)
         with self.captureOnCommitCallbacks(execute=True):
             response = self.client.post(url)
         self.assertRedirects(response, reverse("arena:photos"), fetch_redirect_response=False)
         self.assertFalse(Photo.objects.filter(pk=photo.pk).exists())
-        self.assertFalse(storage.exists(name))
+        self.assertFalse(any(storage.exists(name) for storage, name in files))
 
     def test_matching_excludes_own_photos_and_same_owner_pairs(self):
         self.photo(self.viewer)
@@ -144,6 +146,14 @@ class ArenaTests(TestCase):
         loser.refresh_from_db()
         self.assertEqual((winner.rating, winner.wins, winner.losses), (1016, 1, 0))
         self.assertEqual((loser.rating, loser.wins, loser.losses), (984, 0, 1))
+
+    def test_leaderboard_ranks_only_voted_photos(self):
+        winner, loser, voter, match = self.pair()
+        self.photo(self.viewer)
+        cast_vote(match.pk, voter, winner.pk)
+        response = self.client.get(reverse("arena:leaderboard"))
+        self.assertEqual(response.context["podium"], [winner, loser])
+        self.assertEqual(response.context["ranked"], [])
 
     def test_another_voter_cannot_vote_or_skip_someone_elses_match(self):
         first, second, _, match = self.pair()
@@ -194,10 +204,10 @@ class ArenaTests(TestCase):
                 }, follow=True)
                 self.assertEqual(response["Content-Language"], language)
                 with translation.override(language):
-                    heading = translation.gettext("Two photos.")
+                    heading = translation.gettext("Which photo do you prefer?")
                     error = translation.gettext("Choose one of the two photos.")
                 if language == "zh-hans":
-                    self.assertNotEqual(heading, "Two photos.")
+                    self.assertNotEqual(heading, "Which photo do you prefer?")
                     self.assertNotEqual(error, "Choose one of the two photos.")
                 self.assertContains(response, heading)
                 match = response.context["match"]

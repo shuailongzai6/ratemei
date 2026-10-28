@@ -1,63 +1,53 @@
 {% load i18n %}
-<section id="arena" class="arena" aria-labelledby="arena-heading" tabindex="-1">
-  <div class="arena-intro">
-    <div>
-      <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span>{% translate 'THE PHOTO ARENA' %}</p>
-      <h1 id="arena-heading">{% translate 'Two photos.' %}<br><span class="serif-accent">{% translate 'Your choice.' %}</span></h1>
-      <p class="intro-text">{% translate 'Choose the photo you prefer. Every vote shapes the leaderboard.' %}</p>
-    </div>
-    <div class="arena-stats" aria-label="{% translate 'Voting statistics' %}">
-      <div><strong>{{ voted_count|default:0 }}</strong><span>{% translate 'Your votes' %}</span></div>
-      <span class="stats-divider" aria-hidden="true"></span>
-      <div><strong>{{ photo_count|default:0 }}</strong><span>{% translate 'Photos in play' %}</span></div>
-    </div>
-  </div>
-
-  {% if notice %}<div class="vote-receipt" role="status">{{ notice }}</div>{% endif %}
-  {% if result %}
-  <div class="vote-receipt" role="status">
-    <span class="receipt-check" aria-hidden="true">✓</span>
-    <span>{% translate 'Your vote is in.' %} {% if result.total %}{% blocktranslate with support=result.support total=result.total %}{{ support }} of {{ total }} votes share your choice.{% endblocktranslate %}{% endif %}</span>
+<section id="arena" class="arena" aria-labelledby="arena-title" tabindex="-1">
+  {% if match %}
+  <div class="arena-head">
+    <h1 id="arena-title">{% translate 'Which photo do you prefer?' %}</h1>
+    <dl class="stats">
+      <div><dt>{% translate 'Your votes' %}</dt><dd>{{ voted_count }}</dd></div>
+      <div><dt>{% translate 'Photos in play' %}</dt><dd>{{ photo_count }}</dd></div>
+    </dl>
   </div>
   {% endif %}
-  <p class="duel-error" data-duel-error role="alert" hidden>{% translate 'Your vote could not be saved. Please try again or refresh the page.' %}</p>
+
+  {% if result %}
+  <p class="status status-success" data-status>{% include '_icon.html' with name='check' %}<strong>{% translate 'Your vote is in.' %}</strong> <span>{% if result.total > 1 %}{% blocktranslate with support=result.support total=result.total %}{{ support }} of {{ total }} votes share your choice.{% endblocktranslate %}{% else %}{% translate "You're the first to vote on this pair." %}{% endif %}</span>{% if result.total > 1 %}<span class="meter" aria-hidden="true"><span style="width: {% widthratio result.support result.total 100 %}%"></span></span>{% endif %}</p>
+  {% elif notice %}
+  <p class="status status-notice" data-status>{% include '_icon.html' with name='info' %}<span>{{ notice }}</span></p>
+  {% elif match %}
+  <p class="status">{% translate 'Go with your instinct.' %}</p>
+  {% endif %}
+  <p class="alert" data-duel-error hidden>{% include '_icon.html' with name='info' %}<span>{% translate 'Your vote could not be saved. Please try again or refresh the page.' %}</span></p>
 
   {% if match %}
-  <div class="duel-stage">
-    <form action="{% url 'arena:vote' match.pk %}" method="post" class="duel-form" data-duel-form>
-      {% csrf_token %}
-      <button class="photo-choice" type="submit" name="winner" value="{{ match.left.pk }}" data-choice="left">
-        <span class="photo-frame"><img src="{{ match.left.image.url }}" alt="{% blocktranslate with name=match.left.name %}Photo by {{ name }}{% endblocktranslate %}" fetchpriority="high"><span class="photo-letter" aria-hidden="true">A</span><span class="choice-indicator" aria-hidden="true">↗</span></span>
-        <span class="photo-details"><span class="photo-name">{{ match.left.name }}</span><span class="choice-label">{% translate 'Choose this photo' %}<kbd aria-hidden="true">←</kbd></span></span>
-      </button>
-      <span class="versus" aria-hidden="true">vs</span>
-      <button class="photo-choice" type="submit" name="winner" value="{{ match.right.pk }}" data-choice="right">
-        <span class="photo-frame"><img src="{{ match.right.image.url }}" alt="{% blocktranslate with name=match.right.name %}Photo by {{ name }}{% endblocktranslate %}" fetchpriority="high"><span class="photo-letter" aria-hidden="true">B</span><span class="choice-indicator" aria-hidden="true">↗</span></span>
-        <span class="photo-details"><span class="photo-name">{{ match.right.name }}</span><span class="choice-label">{% translate 'Choose this photo' %}<kbd aria-hidden="true">→</kbd></span></span>
-      </button>
-    </form>
-    <div class="duel-controls">
-      <span class="keyboard-hint"><kbd>←</kbd><kbd>→</kbd> {% translate 'to choose' %}</span>
-      <form action="{% url 'arena:skip' match.pk %}" method="post" data-duel-form>{% csrf_token %}<button class="skip-button" type="submit" data-skip>{% translate 'Skip this pair' %}<span aria-hidden="true">↪</span></button></form>
-      <span class="duel-note">{% translate 'Go with your instinct.' %}</span>
-    </div>
+  <form class="duel" action="{% url 'arena:vote' match.pk %}" method="post" data-duel-form>
+    {% csrf_token %}
+    {% include 'arena/_pick.html' with photo=match.left side='left' key='←' shortcut='ArrowLeft 1' %}
+    <span class="versus" aria-hidden="true">VS</span>
+    {% include 'arena/_pick.html' with photo=match.right side='right' key='→' shortcut='ArrowRight 2' %}
+  </form>
+  <div class="duel-bar">
+    <form action="{% url 'arena:skip' match.pk %}" method="post" data-duel-form>{% csrf_token %}<button class="button button-ghost" type="submit" data-skip aria-keyshortcuts="S">{% include '_icon.html' with name='skip' %}{% translate 'Skip this pair' %}</button></form>
+    <p class="key-hint" aria-hidden="true"><kbd>←</kbd><kbd>→</kbd>{% translate 'to choose' %}<kbd>S</kbd>{% translate 'to skip' %}</p>
   </div>
   {% else %}
-  <div class="empty-arena">
-    <div class="empty-art" aria-hidden="true">
-      <svg viewBox="0 0 290 186" fill="none"><g transform="rotate(-9 95 92)"><rect x="27" y="21" width="116" height="145" rx="13" fill="#e7e9db" stroke="#d0d3bf"/><circle cx="86" cy="76" r="26" stroke="#949d77" stroke-width="2"/><path d="M54 137c0-42 64-42 64 0M76 77h1m19 0h1m-18 12c5 5 10 5 15 0" stroke="#949d77" stroke-width="2" stroke-linecap="round"/><rect x="37" y="31" width="19" height="19" rx="6" fill="#f8f6ef"/></g><g transform="rotate(9 197 92)"><rect x="145" y="21" width="116" height="145" rx="13" fill="#f7dcd3" stroke="#e9bfb1"/><path d="M177 77c0-41 54-41 54 0v9a27 27 0 0 1-54 0v-9Z" stroke="#cf8d77" stroke-width="2"/><path d="M170 137c0-36 65-36 65 0m-45-56h1m21 0h1m-19 12c5 4 10 4 15 0" stroke="#cf8d77" stroke-width="2" stroke-linecap="round"/><rect x="155" y="31" width="19" height="19" rx="6" fill="#f8f6ef"/></g><circle cx="145" cy="96" r="22" fill="#f8f6ef" stroke="#dedbd1"/><path d="m137 96 5 5 11-12" stroke="#e55d45" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </div>
+  <div class="empty">
+    <svg class="empty-art" viewBox="0 0 240 160" aria-hidden="true">
+      <g transform="rotate(-8 80 82)"><rect class="art-card" x="34" y="20" width="92" height="124" rx="16"/><circle class="art-line" cx="80" cy="68" r="17"/><path class="art-line" d="M53 126c5-21 49-21 54 0"/></g>
+      <g transform="rotate(8 160 82)"><rect class="art-card art-card-accent" x="114" y="20" width="92" height="124" rx="16"/><circle class="art-line" cx="160" cy="68" r="17"/><path class="art-line" d="M133 126c5-21 49-21 54 0"/></g>
+      <circle class="art-badge" cx="120" cy="86" r="17"/><path class="art-check" d="m112.5 86 5 5 10-10.5"/>
+    </svg>
     {% if empty_reason == 'finished' %}
-    <p class="eyebrow">{% translate 'ALL CAUGHT UP' %}</p>
-    <h2>{% translate "You've seen every pairing." %}</h2>
+    <h1 id="arena-title">{% translate "You've seen every pairing." %}</h1>
     <p>{% translate 'New photos bring new choices. Check the rankings or add a photo of your own.' %}</p>
     {% else %}
-    <p class="eyebrow">{% translate 'ROOM FOR A FIRST IMPRESSION' %}</p>
-    <h2>{% translate 'The first match starts with you.' %}</h2>
+    <h1 id="arena-title">{% translate 'The first match starts with you.' %}</h1>
     <p>{% translate 'A match needs photos from two other people. Add yours and help get things started.' %}</p>
     {% endif %}
-    <div class="empty-actions"><a class="button button-primary" href="{% url 'arena:photos' %}">{% translate 'Upload a photo' %}<span aria-hidden="true">↗</span></a><a class="text-link" href="{% url 'arena:leaderboard' %}">{% translate 'View leaderboard' %}<span aria-hidden="true">→</span></a></div>
+    <div class="empty-actions">
+      <a class="button button-primary" href="{% url 'arena:photos' %}">{% include '_icon.html' with name='image-plus' %}{% translate 'Upload a photo' %}</a>
+      <a class="button button-ghost" href="{% url 'arena:leaderboard' %}">{% translate 'View leaderboard' %}</a>
+    </div>
   </div>
   {% endif %}
-  <div class="arena-bottom"><span><span class="small-spark" aria-hidden="true">✳</span> {% translate 'Every perspective is different. Yours counts.' %}</span><a href="{% url 'arena:photos' %}">{% translate 'Put your photo in the mix' %}<span aria-hidden="true">↗</span></a></div>
 </section>

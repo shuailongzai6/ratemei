@@ -34,17 +34,19 @@ def get_voter(request):
 
 def round_context(request, **feedback):
     voter = get_voter(request)
-    eligible = Photo.objects.all()
-    if request.user.is_authenticated:
-        eligible = eligible.exclude(owner=request.user)
-    owner_count = eligible.order_by().values("owner_id").distinct().count()
-    return {
+    context = {
         "match": get_match(voter, request.user),
         "photo_count": Photo.objects.count(),
         "voted_count": voter.matches.filter(status=Match.Status.VOTED).count(),
-        "empty_reason": "need_photos" if owner_count < 2 else "finished",
         **feedback,
     }
+    if context["match"] is None:
+        eligible = Photo.objects.all()
+        if request.user.is_authenticated:
+            eligible = eligible.exclude(owner=request.user)
+        owner_count = eligible.order_by().values("owner_id").distinct().count()
+        context["empty_reason"] = "need_photos" if owner_count < 2 else "finished"
+    return context
 
 
 @never_cache
@@ -87,12 +89,12 @@ def skip(request, match_id):
 
 
 def leaderboard(request):
-    ranked = (
+    ranked = list(
         Photo.objects.select_related("owner")
         .filter(Q(wins__gt=0) | Q(losses__gt=0))
         .order_by("-rating", "-wins", "created_at")[:100]
     )
-    return render(request, "arena/leaderboard.html", {"photos": ranked})
+    return render(request, "arena/leaderboard.html", {"podium": ranked[:3], "ranked": ranked[3:]})
 
 
 @login_required

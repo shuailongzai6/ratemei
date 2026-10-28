@@ -4,8 +4,10 @@
 <html lang="{{ current_language }}">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f8f6ef">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#101012" media="(prefers-color-scheme: dark)">
   <meta name="description" content="{% translate 'Two photos, one choice. Share your perspective on SharingFace.' %}">
   <title>{% block title %}SharingFace{% endblock %}</title>
   <link rel="icon" href="{% static 'favicon.svg' %}" type="image/svg+xml">
@@ -14,40 +16,40 @@
 </head>
 <body>
   <a class="skip-link" href="#main">{% translate 'Skip to content' %}</a>
-  <header class="site-header">
-    <a class="brand" href="{% url 'arena:home' %}" aria-label="SharingFace">
-      <svg class="brand-mark" viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect width="40" height="40" rx="13" fill="currentColor"/><path d="M12 14v6a6 6 0 0 0 6 6m10-12v6a6 6 0 0 1-6 6" stroke="#f8f6ef" stroke-width="2.7" stroke-linecap="round"/><circle cx="16" cy="14" r="1.5" fill="#f8f6ef"/><circle cx="24" cy="14" r="1.5" fill="#f8f6ef"/></svg>
-      <span>sharing<span class="brand-light">face</span><span class="brand-dot">.</span></span>
-    </a>
-    <nav class="main-nav" aria-label="{% translate 'Main navigation' %}">
-      {% with route=request.resolver_match.url_name %}
-      <a href="{% url 'arena:home' %}" {% if route == 'home' or route == 'vote' or route == 'skip' %}aria-current="page"{% endif %}>{% translate 'Vote' %}</a>
-      <a href="{% url 'arena:leaderboard' %}" {% if route == 'leaderboard' %}aria-current="page"{% endif %}>{% translate 'Leaderboard' %}</a>
-      <a href="{% url 'arena:photos' %}" {% if route == 'photos' %}aria-current="page"{% endif %}>{% translate 'My photos' %}</a>
-      {% endwith %}
-    </nav>
-    <div class="header-actions">
-      <form action="{% url 'set_language' %}" method="post" class="language-switch" aria-label="{% translate 'Language' %}">
-        {% csrf_token %}
-        <input type="hidden" name="next" value="{{ request.get_full_path }}">
-        <button type="submit" name="language" value="zh-hans" lang="zh-Hans" {% if current_language == 'zh-hans' %}aria-pressed="true"{% else %}aria-pressed="false"{% endif %}>中文</button>
-        <span aria-hidden="true">/</span>
-        <button type="submit" name="language" value="en" lang="en" {% if current_language == 'en' %}aria-pressed="true"{% else %}aria-pressed="false"{% endif %}>EN</button>
-      </form>
-      {% if user.is_authenticated %}
-      <form action="{% url 'logout' %}" method="post" class="logout-form">{% csrf_token %}<button class="text-button" type="submit">{% translate 'Log out' %}</button></form>
-      {% else %}
-      <a class="button button-small button-dark header-login" href="{% url 'login' %}">{% translate 'Log in' %}<span aria-hidden="true">↗</span></a>
-      {% endif %}
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="{% url 'arena:home' %}" aria-label="SharingFace">{% include '_logo.html' %}<span>sharing<b>face</b></span></a>
+      {# One navigation: inline on wide screens, a bottom tab bar on phones. #}
+      <nav class="tabs" aria-label="{% translate 'Main navigation' %}">
+        {% with route=request.resolver_match.url_name %}
+        <a href="{% url 'arena:home' %}" {% if route == 'home' or route == 'vote' or route == 'skip' %}aria-current="page"{% endif %}>{% include '_icon.html' with name='duel' %}<span>{% translate 'Vote' %}</span></a>
+        <a href="{% url 'arena:leaderboard' %}" {% if route == 'leaderboard' %}aria-current="page"{% endif %}>{% include '_icon.html' with name='trophy' %}<span>{% translate 'Leaderboard' %}</span></a>
+        <a href="{% url 'arena:photos' %}" {% if route == 'photos' %}aria-current="page"{% endif %}>{% include '_icon.html' with name='image' %}<span>{% translate 'My photos' %}</span></a>
+        {% endwith %}
+      </nav>
+      <div class="topbar-actions">
+        <form action="{% url 'set_language' %}" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.get_full_path }}">
+          <div class="segmented" role="group" aria-label="{% translate 'Language' %}">
+            <button type="submit" name="language" value="zh-hans" lang="zh-Hans" aria-pressed="{% if current_language == 'zh-hans' %}true{% else %}false{% endif %}">中文</button>
+            <button type="submit" name="language" value="en" lang="en" aria-pressed="{% if current_language == 'en' %}true{% else %}false{% endif %}">EN</button>
+          </div>
+        </form>
+        {% if user.is_authenticated %}
+        <span class="user-chip">{% include '_icon.html' with name='user' %}<span>{{ user.username }}</span></span>
+        <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button class="icon-button" type="submit" aria-label="{% translate 'Log out' %}" title="{% translate 'Log out' %}">{% include '_icon.html' with name='log-out' %}</button></form>
+        {% else %}
+        <a class="button button-dark button-small" href="{% url 'login' %}">{% translate 'Log in' %}</a>
+        {% endif %}
+      </div>
     </div>
   </header>
-  <main id="main" class="main-content" tabindex="-1">
-    {% if messages %}<div class="messages" aria-live="polite">{% for message in messages %}<div class="message {{ message.tags }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+  <main id="main" class="main" tabindex="-1">
+    {% if messages %}<div class="messages">{% for message in messages %}<p class="alert {{ message.tags }}">{{ message }}</p>{% endfor %}</div>{% endif %}
     {% block content %}{% endblock %}
   </main>
-  <footer class="site-footer">
-    <span>SharingFace <span class="footer-dot" aria-hidden="true">·</span> {% translate 'A matter of perspective.' %}</span>
-    <span>{% translate 'Personal preferences, shared.' %}<span class="tiny-spark" aria-hidden="true">✳</span></span>
-  </footer>
+  <footer class="footer"><span>SharingFace</span><span aria-hidden="true">·</span><span>{% translate 'A matter of perspective.' %}</span></footer>
+  <p class="sr-only" aria-live="polite" data-announcer></p>
 </body>
 </html>

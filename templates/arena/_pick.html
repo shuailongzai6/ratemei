@@ -1,0 +1,7 @@
+{% load i18n %}
+<button class="pick" type="submit" name="winner" value="{{ photo.pk }}" data-choice="{{ side }}" aria-keyshortcuts="{{ shortcut }}" aria-label="{% blocktranslate with name=photo.name %}Choose the photo by {{ name }}{% endblocktranslate %}">
+  <img src="{{ photo.display.url }}" alt="" width="720" height="960" fetchpriority="high" decoding="async">
+  <span class="pick-name" aria-hidden="true">{{ photo.name }}</span>
+  <kbd class="pick-key" aria-hidden="true">{{ key }}</kbd>
+  <span class="pick-check" aria-hidden="true">{% include '_icon.html' with name='check' %}</span>
+</button>

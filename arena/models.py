@@ -7,15 +7,29 @@ from django.db.models import F, Q
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
+from imagekit.models import ImageSpecField
+from imagekit.processors import ResizeToFill
 
 
 def photo_upload_path(instance, filename):
     return f"photos/{uuid.uuid4().hex}{Path(filename).suffix.lower()}"
 
 
+def portrait(width):
+    """A 3:4 WebP rendition generated on first use, cropped a little above center to keep faces."""
+    return ImageSpecField(
+        source="image",
+        processors=[ResizeToFill(width, width * 4 // 3, anchor=(0.5, 0.35), upscale=False)],
+        format="WEBP",
+        options={"quality": 80},
+    )
+
+
 class Photo(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="photos")
     image = models.ImageField(upload_to=photo_upload_path)
+    display = portrait(720)
+    thumbnail = portrait(180)
     caption = models.CharField(max_length=40, blank=True)
     rating = models.FloatField(default=1000)
     wins = models.PositiveIntegerField(default=0)
@@ -38,9 +52,17 @@ class Photo(models.Model):
 
 
 @receiver(post_delete, sender=Photo)
-def delete_photo_file(sender, instance, **kwargs):
-    if instance.image:
-        transaction.on_commit(lambda: instance.image.delete(save=False))
+def delete_photo_files(sender, instance, **kwargs):
+    """Remove the upload and its generated renditions once the deletion commits."""
+    if not instance.image:
+        return
+    files = [instance.image, instance.display, instance.thumbnail]
+
+    def delete_files():
+        for file in files:
+            file.storage.delete(file.name)
+
+    transaction.on_commit(delete_files)
 
 
 class Voter(models.Model):
